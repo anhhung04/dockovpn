@@ -1,7 +1,5 @@
 FROM alpine:3.14.1
 
-LABEL maintainer="Alexander Litvinenko <array.shift@yahoo.com>"
-
 # System settings. User normally shouldn't change these parameters
 ENV APP_NAME Dockovpn
 ENV APP_INSTALL_PATH /opt/${APP_NAME}
@@ -20,7 +18,6 @@ WORKDIR ${APP_INSTALL_PATH}
 
 COPY scripts .
 COPY config ./config
-COPY VERSION ./config
 
 RUN apk add --no-cache openvpn easy-rsa bash netcat-openbsd zip curl dumb-init && \
     ln -s /usr/share/easy-rsa/easyrsa /usr/bin/easyrsa && \
