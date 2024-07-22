@@ -52,6 +52,7 @@ fi
 
 # Replace variables in ovpn config file
 sed -i 's/%HOST_TUN_PROTOCOL%/'"$HOST_TUN_PROTOCOL"'/g' /etc/openvpn/server.conf
+sed -i 's/%VPN_SUBNET%/'"$VPN_SUBNET"'/g' /etc/openvpn/server.conf
 
 # Allow ${HOST_TUN_PROTOCOL} traffic on port 1194.
 iptables -A INPUT -i $ADAPTER -p ${HOST_TUN_PROTOCOL} -m state --state NEW,ESTABLISHED --dport 1194 -j ACCEPT
@@ -63,10 +64,10 @@ iptables -A FORWARD -i tun0 -j ACCEPT
 iptables -A OUTPUT -o tun0 -j ACCEPT
 
 # Allow forwarding traffic only from the VPN.
-iptables -A FORWARD -i tun0 -o $ADAPTER -s 10.8.0.0/24 -j ACCEPT
+iptables -A FORWARD -i tun0 -o $ADAPTER -s $VPN_SUBNET/24 -j ACCEPT
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o $ADAPTER -j MASQUERADE
+iptables -t nat -A POSTROUTING -s $VPN_SUBNET/24 -o $ADAPTER -j MASQUERADE
 
 cd "$APP_PERSIST_DIR"
 
